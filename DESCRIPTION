@@ -1,0 +1,24 @@
+Package: STV
+Type: Package
+Title: Implementation of Single Transferable Vote Counting Method
+Version: 0.1.0
+Authors@R: c(
+    person("ToDiscuss", "InMeeting", role = "aut"),
+    person("Emerson", "John", email = "john.emerson@yale.edu", role = c("cre", "aut")),
+    person("Saksham", "Chandra", role = "aut"),
+    person("Lilla", "Orr", role = "aut"),
+    person("Efim", "Abrikosov", role = "ctb"),
+    person("Shadie", "Khubba", role = "ctb"),
+    person("William", "Meyerson", role = "ctb"),
+    person("Shylee", "Ezroni", role = "ctb"),
+    person("Junchao", "Ma", role = "ctb"))
+Maintainer: John W. Emerson <john.emerson@yale.edu>
+URL: https://github.com/jayemerson/STV
+BugReports: https://github.com/jayemerson/STV/issues
+Description: An implementation of Single Transferable Vote (STV) counting 
+    system. Currently uses Cambridge, MA method for surplus allocation and
+    Droop method for quota calculation.
+License: GPL-2
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1
