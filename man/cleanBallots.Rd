@@ -39,5 +39,7 @@ in the following order:
 }
 }
 \examples{
-#cleanBallots(voting.data)
+data(ballots)
+cballots <- cleanBallots(ballots)
+validateBallots(cballots)
 }

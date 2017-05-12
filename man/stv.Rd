@@ -51,5 +51,8 @@ Note: a ballot stays active till either it runs out of marked choices or gets
 removed during surplus allocation.
 }
 \examples{
-#stv(voting.data, seats = 4, file = "voting_results.csv")
+data(ballots)
+cballots <- cleanBallots(ballots)
+result <- stv(cballots, seats = 4)
+unique(result$elect.cand)
 }

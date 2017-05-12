@@ -26,7 +26,9 @@
 #'   fixed by the user.
 #'
 #' @examples
-#' #validateBallots(voting.data)
+#' data(ballots)
+#' result <- try(validateBallots(ballots), silent=TRUE)
+#' print(result)
 #' @export
 validateBallots <- function(x) {
 
@@ -108,7 +110,9 @@ validateBallots <- function(x) {
 #' @return a \code{data.frame} compatible for \code{stv()} function.
 #'
 #' @examples
-#' #cleanBallots(voting.data)
+#' data(ballots)
+#' cballots <- cleanBallots(ballots)
+#' validateBallots(cballots)
 #' @export
 cleanBallots <- function(x, cand.names = NA) {
 

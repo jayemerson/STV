@@ -36,7 +36,10 @@
 #'     surplus if elected and each candidate's votes tally for that round.
 #'
 #' @examples
-#' #stv(voting.data, seats = 4, file = "voting_results.csv")
+#' data(ballots)
+#' cballots <- cleanBallots(ballots)
+#' result <- stv(cballots, seats = 4)
+#' unique(result$elect.cand)
 #' @export
 stv <- function(x, seats = 1, file = "", surplusMethod = "Cambridge", quotaMethod = "Droop") {
 

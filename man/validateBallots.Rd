@@ -36,5 +36,7 @@ calls this function and proceeds only if \code{x} passes all of the following te
 }
 }
 \examples{
-#validateBallots(voting.data)
+data(ballots)
+result <- try(validateBallots(ballots), silent=TRUE)
+print(result)
 }
