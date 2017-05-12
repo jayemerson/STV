@@ -12,7 +12,7 @@ Authors@R: c(
     person("William", "Meyerson", role = "ctb"),
     person("Shylee", "Ezroni", role = "ctb"),
     person("Junchao", "Ma", role = "ctb"))
-Maintainer: John W. Emerson <john.emerson@yale.edu>
+Maintainer: Jay Emerson <john.emerson@yale.edu>
 URL: https://github.com/jayemerson/STV
 BugReports: https://github.com/jayemerson/STV/issues
 Description: An implementation of Single Transferable Vote (STV) counting 
