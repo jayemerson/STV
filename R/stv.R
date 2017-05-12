@@ -36,8 +36,8 @@
 #'     surplus if elected and each candidate's votes tally for that round.
 #'
 #' @examples
-#' stv(voting.data, seats = 4, file = "voting_results.csv")
-
+#' #stv(voting.data, seats = 4, file = "voting_results.csv")
+#' @export
 stv <- function(x, seats = 1, file = "", surplusMethod = "Cambridge", quotaMethod = "Droop") {
 
   # Ensure supported surpluse and quota methods are selected

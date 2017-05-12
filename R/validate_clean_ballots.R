@@ -26,8 +26,8 @@
 #'   fixed by the user.
 #'
 #' @examples
-#' validateBallots(voting.data)
-
+#' #validateBallots(voting.data)
+#' @export
 validateBallots <- function(x) {
 
   # 1. Allowed Class: data.frame
@@ -108,8 +108,8 @@ validateBallots <- function(x) {
 #' @return a \code{data.frame} compatible for \code{stv()} function.
 #'
 #' @examples
-#' cleanBallots(voting.data)
-
+#' #cleanBallots(voting.data)
+#' @export
 cleanBallots <- function(x, cand.names = NA) {
 
   # 1. Check if input: matrix or data.frame, convert matrix into data.frame

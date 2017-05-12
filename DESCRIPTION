@@ -5,8 +5,8 @@ Version: 0.1.0
 Authors@R: c(
     person("ToDiscuss", "InMeeting", role = "aut"),
     person("Jay", "Emerson", email = "john.emerson@yale.edu", role = c("cre", "aut")),
-    person("Saksham", "Chandra", role = c("cre", "aut")),
-    person("Lilla", "Orr", role = c("cre", "aut")),
+    person("Saksham", "Chandra", role = "aut"),
+    person("Lilla", "Orr", role = "aut"),
     person("Efim", "Abrikosov", role = "ctb"),
     person("Shadie", "Khubba", role = "ctb"),
     person("William", "Meyerson", role = "ctb"),
