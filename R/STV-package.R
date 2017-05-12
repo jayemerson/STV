@@ -9,7 +9,8 @@
 #' @importFrom utils tail write.table
 NULL
 
-#' This is data to be included in my package
+#' ballots data contains rankings of 44 candidates by 489 people.
+#' 10 rows are black, which will prompt an error.
 #'
 #' @name ballots
 #' @docType data
