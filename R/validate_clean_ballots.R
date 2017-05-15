@@ -144,16 +144,19 @@ cleanBallots <- function(x, cand.names = NA) {
   # 4. Remove blank cols:
   x <- x[, colSums(!is.na(x)) > 0]
 
-  # 5. Remove blank and/or non-sequentially ranked rows:
-  x <- x[rowSums(is.na(x)) != ncol(x), ]
+  # 5. Remove blank and/or non-sequentially ranked rows:  ### JWE 5/15 changed.
+  x <- x[rowSums(!is.na(x)) > 0, ]
 
-  valid <- rep(FALSE, nrow(x))
-  for(i in 1:nrow(x)) {
-    valid[i] <- identical(as.numeric(sort(x[i,])), as.numeric(1:max(x[i,], na.rm = TRUE)))
+  #### JWE 5/15 this is doing a check, not making a fix.
+  #valid <- rep(FALSE, nrow(x))
+  for (i in 1:nrow(x)) {
+    x[i,] <- rank(x[i,], na.last="keep")
+    #valid[i] <- identical(as.numeric(sort(x[i,])), as.numeric(1:max(x[i,], na.rm = TRUE)))
   }
-  x <- x[valid, ]
+  #x <- x[valid, ]
 
-  if (class(try(validateBallots(x))) == "try-error") warning("Validation failed the validateBallots() check")
+  if (class(try(validateBallots(x))) == "try-error")
+    warning("Validation failed the validateBallots() check")
   return(x)
 }
 
