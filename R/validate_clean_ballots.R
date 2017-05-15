@@ -62,12 +62,11 @@ validateBallots <- function(x) {
                 "do not contain any ranks."))
     stop("\nPlease remove blank row(s), or use cleanBallots()")
   }
-
-  valid <- rep(FALSE, nrow(x))
+  # And finishing (5), note that sort() removes NAs, but be careful with max():
+  valid <- rep(NA, nrow(x))
   for (i in 1:nrow(x)) {
-    if (identical(as.numeric(sort(x[i,])), as.numeric(1:max(x[i,], na.rm = TRUE)))) {
-      valid[i] <- TRUE
-    }
+    valid[i] <- identical(as.numeric(sort(x[i,])),
+                          as.numeric(1:max(x[i,], na.rm = TRUE)))
   }
 
   if (any(!valid)) {
