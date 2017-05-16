@@ -125,7 +125,7 @@ validateBallots <- function(x) {
 #' cballots <- cleanBallots(ballots)
 #' validateBallots(cballots)
 #' @export
-cleanBallots <- function(x, cand.names = NA) {
+cleanBallots <- function(x, cand.names = NULL) {
 
   # 1. Check if input: matrix or data.frame, convert matrix into data.frame
   if (!(class(x) %in% c("data.frame", "matrix"))) {
@@ -148,9 +148,9 @@ cleanBallots <- function(x, cand.names = NA) {
 
   # 3. Provide column names:
   #--- CHECK ---: If x already has valid column names, is this code
-  #-------------: going to remove those names?   JWE May 15: yes, okay????
-  #--- SC May 15---: If cand.names not provided following if() is never executed.
-  if (!is.na(cand.names)) {
+  #-------------: going to remove those names?   JWE May 16, could be
+  # improved to check existing column names?
+  if (!is.null(cand.names)) {
     if (length(cand.names) != ncol(x)) {
       stop ("Please provide exactly one candidate name for each column.")
     }
@@ -165,9 +165,11 @@ cleanBallots <- function(x, cand.names = NA) {
   # 4. Remove blank cols: 
   x <- x[, colSums(!is.na(x)) > 0]
 
-  # 5. Remove blank and/or non-sequentially ranked rows:  ### JWE 5/15 changed.
+  # 5. Remove blank rows:  ### JWE 5/15 changed.
   x <- x[rowSums(!is.na(x)) > 0, ]
 
+  ### Needed: drop cases with ties, and do it here.
+  
   #### JWE 5/15 this is doing a check, not making a fix.  Revised 5/15.
   #valid <- rep(FALSE, nrow(x))
   for (i in 1:nrow(x)) {
