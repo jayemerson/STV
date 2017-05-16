@@ -30,14 +30,21 @@
 #' result <- try(validateBallots(ballots), silent=TRUE)
 #' print(result)
 #' @export
+
+#=========#=========#=========#=========#=========#=======60
+#=========#=========#=========#=========#=========#=========#=========#=======80
+
 validateBallots <- function(x) {
 
   # 1. Allowed Class: data.frame
-  if (class(x) != "data.frame") stop("\nPlease enter object of class data.frame, or use cleanBallots().")
+  if (class(x) != "data.frame") 
+    stop("\nPlease enter object of class data.frame, or use cleanBallots().")
 
   # 2. Check sanity of column names:
-  if (any(is.na(names(x)))) stop("\nPlease provide each candidate's name/identifier as column names.")
-  if (length(unique(names(x))) != ncol(x)) stop("\nPlease provide unique column names.")
+  if (any(is.na(names(x)))) 
+    stop("\nPlease provide each candidate's name/identifier as column names.")
+  if (length(unique(names(x))) != ncol(x)) 
+    stop("\nPlease provide unique column names.")
 
   # 3. Check if x is numeric:
   if (any(!sapply(x, is.numeric))) {
@@ -52,7 +59,7 @@ validateBallots <- function(x) {
     print(paste("Column(s):",
                 paste(which(colSums(is.na(x)) == nrow(x)), collapse = ","),
                 "do not contain any ranks."))
-    stop("\nPlease remove column(s) for candidate(s) not ranked, or use cleanBallots()")
+    stop("\nPlease remove candidate(s) w/o any rankings, or use cleanBallots()")
   }
 
   # 5. Check for blank rows and rows w/ non-sequencial ranks
@@ -62,14 +69,18 @@ validateBallots <- function(x) {
                 "do not contain any ranks."))
     stop("\nPlease remove blank row(s), or use cleanBallots()")
   }
-  # And finishing (5), note that sort() removes NAs, but be careful with max().
-  # Minor changes in code by JWE May 15.
-  valid <- rep(NA, nrow(x))
-  for (i in 1:nrow(x)) {
-    valid[i] <- identical(as.numeric(sort(x[i,])),
-                          as.numeric(1:max(x[i,], na.rm = TRUE)))
-  }
-
+  
+  #---SC May 15---: May want to consider following code:
+  valid <- sapply(1:nrow(x), function(i) all(1:sum(!is.na(x[i, ])) %in% x[i, ]))
+  
+  # # And finishing (5), note that sort() removes NAs, but be careful with max().
+  # # Minor changes in code by JWE May 15.
+  # valid <- rep(NA, nrow(x))
+  # for (i in 1:nrow(x)) {
+  #   valid[i] <- identical(as.numeric(sort(x[i,])),
+  #                         as.numeric(1:max(x[i,], na.rm = TRUE)))
+  # }
+  
   if (any(!valid)) {
     print(paste("Row(s):",
                 paste(which(!valid), collapse = ", "),
@@ -138,11 +149,17 @@ cleanBallots <- function(x, cand.names = NA) {
   # 3. Provide column names:
   #--- CHECK ---: If x already has valid column names, is this code
   #-------------: going to remove those names?   JWE May 15: yes, okay????
+  #--- SC May 15---: If cand.names not provided following if() is never executed.
   if (!is.na(cand.names)) {
     if (length(cand.names) != ncol(x)) {
       stop ("Please provide exactly one candidate name for each column.")
     }
     names(x) <- cand.names
+  }
+  
+  #--- SC May 15---: So, still need to check if x has valid names:
+  if (any(is.na(names(x))) | (length(unique(names(x))) != ncol(x))) {
+    stop ("Please provide exactly one candidate name for each column.")
   }
 
   # 4. Remove blank cols: 
