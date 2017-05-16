@@ -62,12 +62,12 @@ validateBallots <- function(x) {
                 "do not contain any ranks."))
     stop("\nPlease remove blank row(s), or use cleanBallots()")
   }
-
-  valid <- rep(FALSE, nrow(x))
+  # And finishing (5), note that sort() removes NAs, but be careful with max().
+  # Minor changes in code by JWE May 15.
+  valid <- rep(NA, nrow(x))
   for (i in 1:nrow(x)) {
-    if (identical(as.numeric(sort(x[i,])), as.numeric(1:max(x[i,], na.rm = TRUE)))) {
-      valid[i] <- TRUE
-    }
+    valid[i] <- identical(as.numeric(sort(x[i,])),
+                          as.numeric(1:max(x[i,], na.rm = TRUE)))
   }
 
   if (any(!valid)) {
@@ -117,7 +117,9 @@ validateBallots <- function(x) {
 cleanBallots <- function(x, cand.names = NA) {
 
   # 1. Check if input: matrix or data.frame, convert matrix into data.frame
-  if (!(class(x) %in% c("data.frame", "matrix"))) stop("\nPlease enter object of class either data frame or matrix.")
+  if (!(class(x) %in% c("data.frame", "matrix"))) {
+    stop("\nPlease enter object of class either data frame or matrix.")
+  }
   if (class(x) == "matrix") x <- as.data.frame(x, stringsAsFactors = FALSE)
 
   # 2. Check if x is numeric:
@@ -135,25 +137,30 @@ cleanBallots <- function(x, cand.names = NA) {
 
   # 3. Provide column names:
   #--- CHECK ---: If x already has valid column names, is this code
-  #-------------: going to remove those names?
+  #-------------: going to remove those names?   JWE May 15: yes, okay????
   if (!is.na(cand.names)) {
-    if (length(cand.names) != ncol(x)) stop ("Please provide exactly one candidate name for each column.")
+    if (length(cand.names) != ncol(x)) {
+      stop ("Please provide exactly one candidate name for each column.")
+    }
     names(x) <- cand.names
   }
 
-  # 4. Remove blank cols:
+  # 4. Remove blank cols: 
   x <- x[, colSums(!is.na(x)) > 0]
 
-  # 5. Remove blank and/or non-sequentially ranked rows:
-  x <- x[rowSums(is.na(x)) != ncol(x), ]
+  # 5. Remove blank and/or non-sequentially ranked rows:  ### JWE 5/15 changed.
+  x <- x[rowSums(!is.na(x)) > 0, ]
 
-  valid <- rep(FALSE, nrow(x))
-  for(i in 1:nrow(x)) {
-    valid[i] <- identical(as.numeric(sort(x[i,])), as.numeric(1:max(x[i,], na.rm = TRUE)))
+  #### JWE 5/15 this is doing a check, not making a fix.  Revised 5/15.
+  #valid <- rep(FALSE, nrow(x))
+  for (i in 1:nrow(x)) {
+    x[i,] <- rank(x[i,], na.last="keep")
+    #valid[i] <- identical(as.numeric(sort(x[i,])), as.numeric(1:max(x[i,], na.rm = TRUE)))
   }
-  x <- x[valid, ]
+  #x <- x[valid, ]
 
-  if (class(try(validateBallots(x))) == "try-error") warning("Validation failed the validateBallots() check")
+  if (class(try(validateBallots(x))) == "try-error")
+    warning("Validation failed the validateBallots() check")
   return(x)
 }
 
