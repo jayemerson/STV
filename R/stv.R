@@ -1,7 +1,7 @@
 #' Implement STV counting system.
 #'
-#' \code{stv} returns a data.frame with rows containing detailed results
-#' from each round of STV counting.
+#' \code{stv} returns a list containing a data.frame with rows containing detailed results
+#' from each round of STV counting, and a vector containing the elected candidates.
 #'
 #' \code{stv()} first validates \code{x} by running \code{validateBallots()} function.
 #' Once validation is complete, it implements Single Transferable Vote
@@ -137,8 +137,7 @@ stv <- function(x, seats = 1, file = "", surplusMethod = "Cambridge", quotaMetho
     write.table(res, file = file, sep = ",", row.names = FALSE)
   }
 
-  return(res)
-  # return(list("elected" = elect, "detailed.info" = res))
+  return(list("detailed.info" = res, "elected" = elect))
 }
 
 
