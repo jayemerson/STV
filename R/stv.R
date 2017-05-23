@@ -23,17 +23,18 @@
 #'     must pass all checks from \code{validateBallots()}.
 #' @param seats a number indicating candidates to elect. (default = 1)
 #' @param file a character string naming file. "" indicates output to the console only (default).
-#'     Saves a CSV file. So, name should contain ".csv" at the end.
+#'     Saves a CSV file. Its name should end with ".csv".
 #' @param surplusMethod a character string indicating which method to use for
 #'     surplus allocation. Currently supports only one option "Cambridge" (default)
 #' @param quotaMethod a character string indicating which method to use for
-#'     calculation of quota. Currently support only one option "Droop" (default)
+#'     calculation of quota. Currently supports only one option "Droop" (default)
 #'
-#' @return a data.frame with rows containing detailed results from each round of STV counting.
-#'     For any given round of counting, a row contains: number of active ballots, seats to fill,
-#'     quota, maximum and minimum votes obtained by any candidate, who was eliminated (if any),
-#'     if there was a tie for elimination (if yes, how many tied), who was elected (if any),
-#'     surplus if elected and each candidate's votes tally for that round.
+#' @return a list consisting of a data.frame with rows containing detailed results from each 
+#'     round of STV counting, and a vector of election winners.
+#'     For any given round of counting, a row of the detailed information contains: number of 
+#'     active ballots, seats to fill, quota, maximum and minimum votes obtained by any candidate, 
+#'     who was eliminated (if any), if there was a tie for elimination (if yes, how many tied), 
+#'     who was elected (if any), surplus if elected, and each candidate's votes tally for that round.
 #'
 #' @examples
 #' data(ballots)
