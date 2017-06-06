@@ -3,9 +3,11 @@
 \docType{data}
 \name{ballots}
 \alias{ballots}
-\title{This is data to be included in my package}
+\title{ballots data contains rankings of 44 candidates by 489 people.
+10 rows are black, which will prompt an error.}
 \description{
-This is data to be included in my package
+ballots data contains rankings of 44 candidates by 489 people.
+10 rows are black, which will prompt an error.
 }
 \references{
 \url{data_blah.com}
