@@ -1,39 +1,40 @@
 #' Implement STV counting system.
 #'
-#' \code{stv} returns a data.frame with rows containing detailed results
-#' from each round of STV counting.
+#' \code{stv} returns a list containing a data.frame with rows containing detailed results
+#' from each round of STV counting, and a vector containing the elected candidates.
 #'
-#' \code{stv()} first validates \code{x} by running \code{validateBallots()} function.
-#' Once validation is complete, it implements Single Transferable Vote
+#' \code{stv()} first validates \code{x} by running the \code{validateBallots()} function.
+#' Once validation is complete, it implements the selected single transferable vote
 #' counting method. Each round of counting starts with idetification of active
-#' ballots. Then quota is calculated (currently only supports Droop method \code{INCLUDE FORMULA?}).
+#' ballots. Then a quota is calculated (currently only supports Droop method \code{ceiling(votes/(seats + 1))}).
 #' Tally of candidates is obtained using top choices of active ballots. If a
 #' candidate reaches quota, she/he is elected and associated surplus ballots
-#' are reallocated (currently only supports Cambridge method \code{ONE LINE DETAIL?}). If multiple candidates
-#' reach quota, all of them are elected and their surplus are allocated in that
-#' round itself. If nobody reaches quota then candidate with minimum number of votes
+#' are reallocated (currently only supports Cambridge and Fractional methods). If multiple candidates
+#' reach quota, all of them are elected and their surplus are all reallocated. 
+#' If nobody reaches quota then the candidate with the minimum number of votes
 #' is eliminated. If multiple candidates tie for minimum number of votes, one of
-#' them is selected at random and eliminated. The process is repeated till all
+#' them is selected at random and eliminated. The process is repeated until all
 #' of the seats are filled or number of candidates still in race equals number
 #' of unfilled seats. In later case, all of the active candidates are elected.
 #' Note: a ballot stays active till either it runs out of marked choices or gets
-#' removed during surplus allocation.
+#' removed during surplus reallocation.
 #'
 #' @param x a data.frame with rows as ballots and columns as candidates. \code{x}
 #'     must pass all checks from \code{validateBallots()}.
 #' @param seats a number indicating candidates to elect. (default = 1)
 #' @param file a character string naming file. "" indicates output to the console only (default).
-#'     Saves a CSV file. So, name should contain ".csv" at the end.
+#'     Saves a CSV file. Its name should end with ".csv".
 #' @param surplusMethod a character string indicating which method to use for
-#'     surplus allocation. Currently supports only one option "Cambridge" (default)
+#'     surplus allocation. Currently supports "Cambridge" (default) and "Fractional"
 #' @param quotaMethod a character string indicating which method to use for
-#'     calculation of quota. Currently support only one option "Droop" (default)
+#'     calculation of quota. Currently supports only one option "Droop" (default)
 #'
-#' @return a data.frame with rows containing detailed results from each round of STV counting.
-#'     For any given round of counting, a row contains: number of active ballots, seats to fill,
-#'     quota, maximum and minimum votes obtained by any candidate, who was eliminated (if any),
-#'     if there was a tie for elimination (if yes, how many tied), who was elected (if any),
-#'     surplus if elected and each candidate's votes tally for that round.
+#' @return a list consisting of a data.frame with rows containing detailed results from each 
+#'     round of STV counting, and a vector of election winners.
+#'     For any given round of counting, a row of the detailed information contains: number of 
+#'     active ballots, seats to fill, quota, maximum and minimum votes obtained by any candidate, 
+#'     who was eliminated (if any), if there was a tie for elimination (if yes, how many tied), 
+#'     who was elected (if any), surplus if elected, and each candidate's votes tally for that round.
 #'
 #' @examples
 #' data(ballots)
@@ -44,7 +45,7 @@
 stv <- function(x, seats = 1, file = "", surplusMethod = "Cambridge", quotaMethod = "Droop") {
 
   # Ensure supported surpluse and quota methods are selected
-  if(surplusMethod != "Cambridge") stop("Please set surplusMethod = 'Cambridge'. This is currently the only supported method.")
+  if (!surplusMethod %in% c("Cambridge", "Fractional")) stop("Please set surplusMethod = 'Cambridge' or 'Fractional'. These are currently the only supported methods.")
   if(quotaMethod != "Droop") stop("Please set quotaMethod = 'Droop'. This is currently the only supported method.")
 
   junk <- validateBallots(x)
@@ -54,11 +55,16 @@ stv <- function(x, seats = 1, file = "", surplusMethod = "Cambridge", quotaMetho
   # Initialize various things:
   elim <- c()                                  # Store names of eliminated candidates
   elect <- c()                                 # Store names of elected candidates
-  included.ballots <- rep(TRUE, nrow(x))       # Ballots included at a given round
+  if (surplusMethod == "Cambridge") {
+    included.ballots <- rep(TRUE, nrow(x))     # Ballots included at a given round
+  }
+  if (surplusMethod == "Fractional") {
+    ballot.weight <- rep(1, nrow(x))           # Each ballot's weight at a given round
+  }
   unfilled <- seats                            # Vacant seats at a given round
   Nround <- 0                                  # Current round number
 
-  res <- data.frame(matrix(NA, ncol = 9 + ncol(x), nrow = 0)) # rename as res
+  res <- data.frame(matrix(NA, ncol = 9 + ncol(x), nrow = 0))
   names(res) <- c("ballots", "seats.to.fill", "quota", "max.vote.count", "min.vote.count",
                   "elim.cand", "tied.for.elim", "elect.cand", "surplus", names(x))
 
@@ -83,13 +89,18 @@ stv <- function(x, seats = 1, file = "", surplusMethod = "Cambridge", quotaMetho
         write.table(res, file = file, sep = ",", row.names = FALSE)
       }
 
-      return(res)
-      # return(list("elected" = elect, "detailed.info" = res))
+      return(list("elected" = elect, "detailed.info" = res))
     }
 
     # For remaining candidates, get valid ballots (1. not empty 2. not excluded in prior round)
-    curr.ballots <- (rowSums(!is.na(x[ ,curr.candidates])) > 0) & included.ballots
-    ballot.size <- sum(curr.ballots)
+    if (surplusMethod == "Cambridge") {
+      curr.ballots <- (rowSums(!is.na(x[ ,curr.candidates])) > 0) & included.ballots
+      ballot.size <- sum(curr.ballots)
+    }
+    if (surplusMethod == "Fractional") {
+      curr.ballots <- rowSums(!is.na(x[ ,curr.candidates])) > 0
+      ballot.size <- floor(sum(curr.ballots*ballot.weight))
+    }
     res$ballots[Nround] <- ballot.size
 
     # Calculate Quota: Manually add 1 instead of using "ceiling()" to address whole numbers
@@ -97,13 +108,23 @@ stv <- function(x, seats = 1, file = "", surplusMethod = "Cambridge", quotaMetho
     res$quota[Nround] <- quota
 
     # Get top choice for each valid ballot then tabulate it (i.e. get vote count for each candidate):
-    top.choice <- apply(x[ ,curr.candidates], 1, function(i.row) names(x[ ,curr.candidates])[which.min(i.row)]) # try using curr.candidates instead of names(x[ ,curr.cand])
+    top.choice <- apply(x[ ,curr.candidates], 1, function(i.row) names(x[ ,curr.candidates])[which.min(i.row)])
     top.choice[!curr.ballots] <- NA
-    vote.counts <- table(factor(top.choice, levels = curr.candidates))
-
-    res[Nround, names(vote.counts)] <- vote.counts
-    res$max.vote.count[Nround] <- max(vote.counts)
-    res$min.vote.count[Nround] <- min(vote.counts)
+    if (surplusMethod == "Cambridge") {
+      vote.counts <- table(factor(top.choice, levels = curr.candidates))
+    }
+    
+    if (surplusMethod == "Fractional") {
+      vote.counts <- table(factor(top.choice, levels = curr.candidates))
+      for (i in 1:length(vote.counts)) {
+        weighted.votes <- (names(vote.counts[i]) == top.choice)*ballot.weight 
+        vote.counts[i] <- sum(weighted.votes, na.rm = TRUE)
+      }
+    }
+    
+    res[Nround, names(vote.counts)] <- round(vote.counts, 2)
+    res$max.vote.count[Nround] <- round(max(vote.counts), 2)
+    res$min.vote.count[Nround] <- round(min(vote.counts), 2)
     res[Nround, elect] <- "Elected"
     res[Nround, elim] <- "Eliminated"
 
@@ -114,15 +135,19 @@ stv <- function(x, seats = 1, file = "", surplusMethod = "Cambridge", quotaMetho
       elect <- c(elect, names(curr.elected))
       unfilled <- seats - length(elect)
       res$elect.cand[Nround] <- paste(names(curr.elected), collapse = "; ")
-      res$surplus[Nround] <- paste(curr.elected - quota, collapse = "; ")
+      res$surplus[Nround] <- paste(round(curr.elected - quota, 2), collapse = "; ")
 
-      # Redistribute surplus votes (Cambridge method only for now)
+      # Redistribute surplus votes
       for (i in names(curr.elected)) {
         cand.ballots <- which(top.choice == i)
         if (surplusMethod == "Cambridge") {
           included.ballots[sample(cand.ballots, quota)] <- FALSE
         }
-      } # CLOSE surplus allocation
+        if (surplusMethod == "Fractional") {
+          ballot.weight[cand.ballots] <- ballot.weight[cand.ballots]*(vote.counts[i] - quota)/vote.counts[i]
+        }
+      } # CLOSE surplus realocation
+
     } else {
       curr.elim <- names(which(vote.counts == min(vote.counts)))
       if (length(curr.elim) > 1) res$tied.for.elim[Nround] <- paste("Yes: ", length(curr.elim), sep = "")
@@ -137,8 +162,6 @@ stv <- function(x, seats = 1, file = "", surplusMethod = "Cambridge", quotaMetho
     write.table(res, file = file, sep = ",", row.names = FALSE)
   }
 
-  return(res)
-  # return(list("elected" = elect, "detailed.info" = res))
+  return(list("detailed.info" = res, "elected" = elect))
 }
-
 
