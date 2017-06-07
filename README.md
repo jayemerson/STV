@@ -8,22 +8,22 @@ To load the package in R directly from github, you may use the following command
 
 ---
     > library(devtools)
-    > install_github('STV', 'jayemerson')
+    > install_github('STV/jayemerson')
     > library(STV)
 ---
 
 # Feedback
 #
-Although there are many ways of counting single transferable votes, this package supports only one. We welcome collaboration as we expand the vote count method options.
+Although there are many ways of counting single transferable votes, this package supports only one quota method and two surplus reallocation methods. We welcome collaboration as we expand the vote count method options.
 
 # Jay's Github notes
 
 After creating the public repository on GitHib, essentially empty
 with only `README.md`, I cloned to my laptop:
 
-    git clone https://github.com/jayemerson/big.char.git
+    git clone https://github.com/jayemerson/STV.git
     
-I then moved the package contents into the local `big.char` directory,
+I then moved the package contents into the local `STV` directory,
 at which point the following workflow appears sufficient for my own
 purposes:
 
