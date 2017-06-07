@@ -4,7 +4,7 @@
 \alias{cleanBallots}
 \title{Tries to Address \code{validateBallots()} Warning(s).}
 \usage{
-cleanBallots(x, cand.names = NA)
+cleanBallots(x, cand.names = NULL)
 }
 \arguments{
 \item{x}{a \code{data.frame} with rows as ballots and columns as candidates.}
