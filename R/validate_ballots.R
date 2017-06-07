@@ -4,7 +4,8 @@
 #' corresponds to a ballot and candidate respectively. See details for the
 #' tests run by this function. If input data is in correct format, returns
 #' string: "All tests passed. Please feel free to run \code{stv()} function.".
-#' Otherwise, prints corresponding warning message.
+#' If \code{clean == FALSE} then reports and stops at the first failed test.
+#' NOTE: Some of the warnings can be fixed using \code{clean == TRUE} option.
 #'
 #' Checks if input data is in acceptable format for \code{stv()}. User must 
 #' run this function before calling \code{stv()}. Before any calculation, 
@@ -38,7 +39,7 @@
 #'
 #' @examples
 #' data(ballots)
-#' result <- try(validateBallots(ballots), silent=TRUE)
+#' result <- try(validateBallots2(ballots), silent=TRUE)
 #' print(result)
 #' @export
 
@@ -142,7 +143,11 @@ validateBallots2 <- function(x, clean = FALSE, cand.names = NA) {
     }
   }
   
-  return("All tests passed. Please feel free to run stv() function.")
+  if (clean) {
+    return(x)
+  } else {
+    return("All tests passed. Please feel free to run stv() function.")
+  }
 }
 
 
