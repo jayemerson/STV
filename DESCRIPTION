@@ -4,7 +4,7 @@ Title: Single Transferable Vote Counting
 Version: 0.1.0
 Authors@R: c(
     person("ToDiscuss", "InMeeting", role = "aut"),
-    person("Jay", "Emerson", email = "john.emerson@yale.edu", role = c("cre", "aut")),
+    person("John", "Emerson", email = "john.emerson@yale.edu", role = c("cre", "aut")),
     person("Saksham", "Chandra", role = "aut"),
     person("Lilla", "Orr", role = "aut"),
     person("Efim", "Abrikosov", role = "ctb"),
