@@ -59,7 +59,7 @@ stv <- function(x, seats = 1, file = "", surplusMethod = "Cambridge", quotaMetho
     included.ballots <- rep(TRUE, nrow(x))     # Ballots included at a given round
   }
   if (surplusMethod == "Fractional") {
-    ballot.weight <- rep(1, nrow(x))           # Each ballot's weight at a given round
+    ballot.weights <- rep(1, nrow(x))          # Each ballot's weight at a given round
   }
   unfilled <- seats                            # Vacant seats at a given round
   Nround <- 0                                  # Current round number
@@ -89,7 +89,7 @@ stv <- function(x, seats = 1, file = "", surplusMethod = "Cambridge", quotaMetho
         write.table(res, file = file, sep = ",", row.names = FALSE)
       }
 
-      return(list("elected" = elect, "detailed.info" = res))
+      return(list("elected" = elect, "details" = res))
     }
 
     # For remaining candidates, get valid ballots (1. not empty 2. not excluded in prior round)
@@ -99,7 +99,7 @@ stv <- function(x, seats = 1, file = "", surplusMethod = "Cambridge", quotaMetho
     }
     if (surplusMethod == "Fractional") {
       curr.ballots <- rowSums(!is.na(x[ ,curr.candidates])) > 0
-      ballot.size <- floor(sum(curr.ballots*ballot.weight))
+      ballot.size <- floor(sum(curr.ballots*ballot.weights))
     }
     res$ballots[Nround] <- ballot.size
 
@@ -110,14 +110,11 @@ stv <- function(x, seats = 1, file = "", surplusMethod = "Cambridge", quotaMetho
     # Get top choice for each valid ballot then tabulate it (i.e. get vote count for each candidate):
     top.choice <- apply(x[ ,curr.candidates], 1, function(i.row) names(x[ ,curr.candidates])[which.min(i.row)])
     top.choice[!curr.ballots] <- NA
-    if (surplusMethod == "Cambridge") {
-      vote.counts <- table(factor(top.choice, levels = curr.candidates))
-    }
+    vote.counts <- table(factor(top.choice, levels = curr.candidates))
     
     if (surplusMethod == "Fractional") {
-      vote.counts <- table(factor(top.choice, levels = curr.candidates))
       for (i in 1:length(vote.counts)) {
-        weighted.votes <- (names(vote.counts[i]) == top.choice)*ballot.weight 
+        weighted.votes <- (names(vote.counts[i]) == top.choice)*ballot.weights 
         vote.counts[i] <- sum(weighted.votes, na.rm = TRUE)
       }
     }
@@ -144,7 +141,7 @@ stv <- function(x, seats = 1, file = "", surplusMethod = "Cambridge", quotaMetho
           included.ballots[sample(cand.ballots, quota)] <- FALSE
         }
         if (surplusMethod == "Fractional") {
-          ballot.weight[cand.ballots] <- ballot.weight[cand.ballots]*(vote.counts[i] - quota)/vote.counts[i]
+          ballot.weights[cand.ballots] <- ballot.weights[cand.ballots]*(vote.counts[i] - quota)/vote.counts[i]
         }
       } # CLOSE surplus realocation
 
@@ -162,6 +159,6 @@ stv <- function(x, seats = 1, file = "", surplusMethod = "Cambridge", quotaMetho
     write.table(res, file = file, sep = ",", row.names = FALSE)
   }
 
-  return(list("detailed.info" = res, "elected" = elect))
+  return(list("elected" = elect, "details" = res))
 }
 
