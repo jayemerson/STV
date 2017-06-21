@@ -8,13 +8,13 @@ To load the package in R directly from github, you may use the following command
 
 ---
     > library(devtools)
-    > install_github('STV/jayemerson')
+    > install_github('jayemerson/STV')
     > library(STV)
 ---
 
 # Feedback
 #
-Although there are many ways of counting single transferable votes, this package supports only one quota method and two surplus reallocation methods. We welcome collaboration as we expand the vote count method options.
+Although there are many ways of counting single transferable votes, this package supports only two quota methods and two surplus reallocation methods. We welcome collaboration as we expand the vote count method options.
 
 # Jay's Github notes
 
