@@ -6,18 +6,18 @@
 #' \code{stv()} first validates \code{x} by running the \code{validateBallots()} function.
 #' Once validation is complete, it implements the selected single transferable vote
 #' counting method. Each round of counting starts with idetification of active
-#' ballots. Then a quota is calculated (currently only supports Droop method \code{ceiling(votes/(seats + 1))}).
-#' Tally of candidates is obtained using top choices of active ballots. If a
-#' candidate reaches quota, she/he is elected and associated surplus ballots
-#' are reallocated (currently only supports Cambridge and Fractional methods). If multiple candidates
-#' reach quota, all of them are elected and their surplus are all reallocated. 
-#' If nobody reaches quota then the candidate with the minimum number of votes
-#' is eliminated. If multiple candidates tie for minimum number of votes, one of
-#' them is selected at random and eliminated. The process is repeated until all
-#' of the seats are filled or number of candidates still in race equals number
-#' of unfilled seats. In later case, all of the active candidates are elected.
-#' Note: a ballot stays active till either it runs out of marked choices or gets
-#' removed during surplus reallocation.
+#' ballots. Then a quota is calculated (currently only supports Droop method 
+#' \code{ceiling(votes/(seats + 1))} and Hare method \code{ceiling(votes/seats)}).
+#' A tally of each candidate's vote share is obtained using top choices of active ballots, 
+#' where a ballot stays active until it runs out of marked choices or gets
+#' removed during surplus reallocation. If a candidate reaches the quota, she/he is elected 
+#' and associated surplus ballots are reallocated (currently only supports Cambridge and 
+#' Fractional methods). If multiple candidates reach the quota, all of them are elected and 
+#' their surpluses are all reallocated. If no candidate reaches the quota, then the candidate 
+#' with the minimum number of votes is eliminated. If multiple candidates tie for minimum 
+#' number of votes, one of them is selected at random and eliminated. The process is repeated 
+#' until all of the seats are filled or the number of candidates still in race equals the number
+#' of unfilled seats. In the later case, all of the active candidates are elected.
 #'
 #' @param x a data.frame with rows as ballots and columns as candidates. \code{x}
 #'     must pass all checks from \code{validateBallots()}.
@@ -25,9 +25,9 @@
 #' @param file a character string naming file. "" indicates output to the console only (default).
 #'     Saves a CSV file. Its name should end with ".csv".
 #' @param surplusMethod a character string indicating which method to use for
-#'     surplus allocation. Currently supports "Cambridge" (default) and "Fractional"
+#'     surplus allocation. Currently supports "Cambridge" (default) and "Fractional".
 #' @param quotaMethod a character string indicating which method to use for
-#'     calculation of quota. Currently supports only one option "Droop" (default)
+#'     calculation of quota. Currently supports "Droop" (default) and "Hare".
 #'
 #' @return a list consisting of a data.frame with rows containing detailed results from each 
 #'     round of STV counting, and a vector of election winners.
@@ -46,7 +46,7 @@ stv <- function(x, seats = 1, file = "", surplusMethod = "Cambridge", quotaMetho
 
   # Ensure supported surpluse and quota methods are selected
   if (!surplusMethod %in% c("Cambridge", "Fractional")) stop("Please set surplusMethod = 'Cambridge' or 'Fractional'. These are currently the only supported methods.")
-  if(quotaMethod != "Droop") stop("Please set quotaMethod = 'Droop'. This is currently the only supported method.")
+  if (!quotaMethod %in% c("Droop", "Hare")) stop("Please set quotaMethod = 'Droop' or 'Hare'. These are currently the only supported methods.")
 
   junk <- validateBallots(x)
 
@@ -105,6 +105,7 @@ stv <- function(x, seats = 1, file = "", surplusMethod = "Cambridge", quotaMetho
 
     # Calculate Quota: Manually add 1 instead of using "ceiling()" to address whole numbers
     if (quotaMethod == "Droop") quota <- floor(ballot.size/(unfilled + 1)) + 1
+    if (quotaMethod == "Hare") quota <- ceiling(ballot.size/unfilled)
     res$quota[Nround] <- quota
 
     # Get top choice for each valid ballot then tabulate it (i.e. get vote count for each candidate):
