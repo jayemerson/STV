@@ -1,8 +1,8 @@
 ########################################################################### 80 #
 
-#' STV Voting (EDIT THIS)
+#' STV Vote Counting
 #'
-#' Blah blah...
+#' Functions in this package are designed to clean, validate, and count single transferable votes.
 #' @docType package
 #' @name STV-package
 #' @author Jay Emerson (expand this)
