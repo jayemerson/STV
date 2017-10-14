@@ -22,7 +22,7 @@
 #' @param x a data.frame with rows as ballots and columns as candidates. \code{x}
 #'     must pass all checks from \code{validateBallots()}.
 #' @param seats a number indicating candidates to elect. (default = 1)
-#' @param file a character string naming file. "" indicates output to the console only (default).
+#' @param file a character string naming a file. "" indicates output to the console only (default).
 #'     Saves a CSV file. Its name should end with ".csv".
 #' @param surplusMethod a character string indicating which method to use for
 #'     surplus allocation. Currently supports "Cambridge" (default) and "Fractional".
@@ -49,9 +49,6 @@ stv <- function(x, seats = 1, file = "", surplusMethod = "Cambridge", quotaMetho
   if (!quotaMethod %in% c("Droop", "Hare")) stop("Please set quotaMethod = 'Droop' or 'Hare'. These are currently the only supported methods.")
 
   junk <- validateBallots(x)
-  
-  if (class(try(validateBallots(x))) == "try-error")
-    stop("Ballots failed the validateBallots() check.") #### New code ####
 
   if(seats > ncol(x)) stop("Number of seats must be less than or equal to the number of candidates.")
 
