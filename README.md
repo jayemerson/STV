@@ -5,6 +5,10 @@ system. By default, it uses the Cambridge, MA method for surplus allocation
 and Droop method for quota calculation.  Fractional surplus allocation
 and the Hare quota are available as options.
 
+Current package build status via use of
+[Travis CI](https://travis-ci.org/jayemerson/STV):
+<a href="https://travis-ci.org/jayemerson/STV"><img src="https://travis-ci.org/jayemerson/STV.svg?branch=master"></a>
+
 # Getting Started
 #
 To load the package in R directly from github, you may use the following commands:
