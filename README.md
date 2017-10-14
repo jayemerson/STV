@@ -13,7 +13,8 @@ and the Hare quota are available as options.
 #
 See a page from the <a href="https://www.electoral-reform.org.uk/voting-systems/types-of-voting-system/single-transferable-vote/">Electoral Reform Society</a>, or
 of course <a href="https://en.wikipedia.org/wiki/Single_transferable_vote">Wikipedia</a>.
-A second Wikipedia page describes the<a href="https://en.wikipedia.org/wiki/History_and_use_of_the_single_transferable_vote">history
+A second Wikipedia page describes the 
+<a href="https://en.wikipedia.org/wiki/History_and_use_of_the_single_transferable_vote">history
 and use of the STV system.</a>
 There is also a <a href="https://www.youtube.com/watch?v=l8XOZJkozfI">cute video
 cartoon</a> on YouTube that you might enjoy.
