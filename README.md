@@ -5,7 +5,7 @@ system. By default, it uses the Cambridge, MA method for surplus allocation
 and Droop method for quota calculation.  Fractional surplus allocation
 and the Hare quota are available as options.
 
-Current package build status via use of
+<b>Current package build status</b> via use of
 [Travis CI](https://travis-ci.org/jayemerson/STV):
 <a href="https://travis-ci.org/jayemerson/STV"><img src="https://travis-ci.org/jayemerson/STV.svg?branch=master"></a>
 
