@@ -60,6 +60,7 @@
 #' result2 <- stv(cballots, seats = 4)
 #' result2$elected
 #' 
+#' \dontrun{
 #' result3 <- stv(cballots, seats = 4, surplusMethod = "Fractional")
 #' result3$elected
 #' 
@@ -70,10 +71,10 @@
 #' result5 <- stv(cballots, seats = 4, surplusMethod = "Cambridge",
 #'                quotaMethod = "Hare")
 #' result5$elected
+#' }
 #' 
 #' @export
-stv <- function(x, seats = 1, file = "", surplusMethod = "Cambridge",
-                quotaMethod = "Droop") {
+stv <- function(x, seats = 1, file = "", surplusMethod = "Cambridge", quotaMethod = "Droop") {
 
   # Ensure supported surpluse and quota methods are selected
   if (!surplusMethod %in% c("Cambridge", "Fractional")) stop("Please set surplusMethod = 'Cambridge' or 'Fractional'. These are currently the only supported methods.")
