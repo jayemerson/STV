@@ -54,8 +54,25 @@ of unfilled seats. In the later case, all of the active candidates are elected.
 \examples{
 data(ballots)
 cballots <- cleanBallots(ballots)
-result <- stv(cballots, seats = 4)
-names(result)
-result$elected
+
+set.seed(1)
+result1 <- stv(cballots, seats = 4)
+names(result1)
+result1$elected
+
+set.seed(4)
+result2 <- stv(cballots, seats = 4)
+result2$elected
+
+result3 <- stv(cballots, seats = 4, surplusMethod = "Fractional")
+result3$elected
+
+result4 <- stv(cballots, seats = 4, surplusMethod = "Fractional",
+               quotaMethod = "Hare")
+result4$elected
+
+result5 <- stv(cballots, seats = 4, surplusMethod = "Cambridge",
+               quotaMethod = "Hare")
+result5$elected
 
 }

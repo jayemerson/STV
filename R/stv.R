@@ -1,8 +1,9 @@
-#' Implement STV counting system.
+#' Implement STV Counting Systems
 #'
-#' \code{stv} returns a list containing a data.frame with rows containing detailed results
-#' from each round of STV counting, and a vector containing the elected candidates.
+#' Analyze a data frame of STV election ballot rankings and return
+#' the elected voters and details of the steps in the election counting.
 #'
+#' Revise this:
 #' \code{stv()} first validates \code{x} by running the \code{validateBallots()} function.
 #' Once validation is complete, it implements the selected single transferable vote
 #' counting method. Each round of counting starts with idetification of active
@@ -19,32 +20,60 @@
 #' until all of the seats are filled or the number of candidates still in race equals the number
 #' of unfilled seats. In the later case, all of the active candidates are elected.
 #'
-#' @param x a data.frame with rows as ballots and columns as candidates. \code{x}
-#'     must pass all checks from \code{validateBallots()}.
-#' @param seats a number indicating candidates to elect. (default = 1)
-#' @param file a character string naming a file. "" indicates output to the console only (default).
-#'     Saves a CSV file. Its name should end with ".csv".
+#' @param x a data frame with rows of ballots and columns for each
+#'     candidate. \code{x} must pass all checks from
+#'     \code{\link{validateBallots}}.
+#' @param seats an integer (default = 1) indicating candidates to elect.
+#' @param file a character string naming a file; \code{""} (default) indicates 
+#'     output to the console only (default), otherwise a CSV file is created
+#'     (and thus \code{file} should end with \code{".csv"}).
 #' @param surplusMethod a character string indicating which method to use for
-#'     surplus allocation. Currently supports "Cambridge" (default) and "Fractional".
+#'     surplus allocation. Currently supports \code{"Cambridge"} (default) and
+#'     \code{"Fractional"}.
 #' @param quotaMethod a character string indicating which method to use for
-#'     calculation of quota. Currently supports "Droop" (default) and "Hare".
+#'     calculation of quota. Currently supports \code{"Droop"} (default) and 
+#'     \code{"Hare"}.
 #'
-#' @return a list consisting of a data.frame with rows containing detailed results from each 
-#'     round of STV counting, and a vector of election winners.
-#'     For any given round of counting, a row of the detailed information contains: number of 
-#'     active ballots, seats to fill, quota, maximum and minimum votes obtained by any candidate, 
-#'     who was eliminated (if any), if there was a tie for elimination (if yes, how many tied), 
-#'     who was elected (if any), surplus if elected, and each candidate's votes tally for that round.
+#' @return The object returned is a list consisting of two components: a
+#'     vector of the elected candidates, and a data frame with rows containing
+#'     detailed results from each round of STV counting.
+#'     
+#'     For any given round of counting, a row of the detailed information
+#'     contains: number of active ballots, seats to remaining to be filled,
+#'     the current quota, the maximum and minimum votes obtained by each
+#'     candidate, who was eliminated (if applicable), whether there was a
+#'     tie for elimination (indicated by how many tied),  who was elected
+#'     (if applicable), the surplus if elected (or multiple surpluses if
+#'     multiple candidates were elected), and each candidate's votes tally
+#'     for that round.
 #'
 #' @examples
 #' data(ballots)
 #' cballots <- cleanBallots(ballots)
-#' result <- stv(cballots, seats = 4)
-#' names(result)
-#' result$elected
+#' 
+#' set.seed(1)
+#' result1 <- stv(cballots, seats = 4)
+#' names(result1)
+#' result1$elected
+#' 
+#' set.seed(4)
+#' result2 <- stv(cballots, seats = 4)
+#' result2$elected
+#' 
+#' result3 <- stv(cballots, seats = 4, surplusMethod = "Fractional")
+#' result3$elected
+#' 
+#' result4 <- stv(cballots, seats = 4, surplusMethod = "Fractional",
+#'                quotaMethod = "Hare")
+#' result4$elected
+#' 
+#' result5 <- stv(cballots, seats = 4, surplusMethod = "Cambridge",
+#'                quotaMethod = "Hare")
+#' result5$elected
 #' 
 #' @export
-stv <- function(x, seats = 1, file = "", surplusMethod = "Cambridge", quotaMethod = "Droop") {
+stv <- function(x, seats = 1, file = "", surplusMethod = "Cambridge",
+                quotaMethod = "Droop") {
 
   # Ensure supported surpluse and quota methods are selected
   if (!surplusMethod %in% c("Cambridge", "Fractional")) stop("Please set surplusMethod = 'Cambridge' or 'Fractional'. These are currently the only supported methods.")
