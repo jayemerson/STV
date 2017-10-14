@@ -9,6 +9,13 @@ and the Hare quota are available as options.
 [Travis CI](https://travis-ci.org/jayemerson/STV):
 <a href="https://travis-ci.org/jayemerson/STV"><img src="https://travis-ci.org/jayemerson/STV.svg?branch=master"></a>
 
+# More Information on STV
+#
+See a page from the <a href="https://www.electoral-reform.org.uk/voting-systems/types-of-voting-system/single-transferable-vote/">Electoral Reform Society</a>, or
+of course <a href="https://en.wikipedia.org/wiki/Single_transferable_vote">Wikipedia</a>.
+There is also a <a href="https://www.youtube.com/watch?v=l8XOZJkozfI">cute video
+cartoon</a> on YouTube that you might enjoy.
+
 # Getting Started
 #
 To load the package in R directly from github, you may use the following commands:

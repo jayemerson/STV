@@ -40,7 +40,9 @@
 #' data(ballots)
 #' cballots <- cleanBallots(ballots)
 #' result <- stv(cballots, seats = 4)
-#' unique(result$elect.cand)
+#' names(result)
+#' result$elected
+#' 
 #' @export
 stv <- function(x, seats = 1, file = "", surplusMethod = "Cambridge", quotaMethod = "Droop") {
 
