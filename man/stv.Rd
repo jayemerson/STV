@@ -55,5 +55,7 @@ of unfilled seats. In the later case, all of the active candidates are elected.
 data(ballots)
 cballots <- cleanBallots(ballots)
 result <- stv(cballots, seats = 4)
-unique(result$elect.cand)
+names(result)
+result$elected
+
 }
