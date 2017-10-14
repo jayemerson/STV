@@ -1,6 +1,9 @@
 # STV
 #
-Functions in this package are designed to clean, validate, and count single transferable votes.
+Implementations of the Single Transferable Vote (STV) counting 
+system. By default, it uses the Cambridge, MA method for surplus allocation
+and Droop method for quota calculation.  Fractional surplus allocation
+and the Hare quota are available as options.
 
 # Getting Started
 #
@@ -16,7 +19,7 @@ To load the package in R directly from github, you may use the following command
 #
 Although there are many ways of counting single transferable votes, this package supports only two quota methods and two surplus reallocation methods. We welcome collaboration as we expand the vote count method options.
 
-# Jay's Github notes
+# Jay's Github notes (becasue I can never remember...)
 
 After creating the public repository on GitHib, essentially empty
 with only `README.md`, I cloned to my laptop:
