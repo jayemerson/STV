@@ -3,7 +3,7 @@
 #' Analyze a data frame of STV election ballot rankings and return
 #' the elected voters and details of the steps in the election counting.
 #'
-#' Revise this:
+#' Revise the details:
 #' \code{stv()} first validates \code{x} by running the \code{validateBallots()} function.
 #' Once validation is complete, it implements the selected single transferable vote
 #' counting method. Each round of counting starts with idetification of active
