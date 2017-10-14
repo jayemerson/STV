@@ -20,6 +20,7 @@ Description: Implementations of the Single Transferable Vote counting
     and Droop method for quota calculation.  Fractional surplus allocation
     and the Hare quota are available as options.
 License: LGPL-3
+Copyright: (C) 2017 John W. Emerson
 Encoding: UTF-8
 LazyData: true
 Suggests: testthat, crayon
