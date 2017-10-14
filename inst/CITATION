@@ -1,0 +1,15 @@
+bibentry("Manual",
+   title = "STV: Single Transferable Vote Counting",
+   author = person("Jay Emerson"),
+   organization = "Department of Statistics, Yale University",
+   address      = "New Haven, CT",
+   year   = version$year,
+   note   = "Work in Progress",
+   url    = "https://github.com/jayemerson/STV",
+
+   mheader = "To cite STV in publications use:",
+
+   mfooter = 
+     "You are probably just citing the package at this point."
+)
+
