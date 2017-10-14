@@ -13,42 +13,43 @@ must pass all checks from \code{validateBallots()}.}
 
 \item{seats}{a number indicating candidates to elect. (default = 1)}
 
-\item{file}{a character string naming file. "" indicates output to the console only (default).
-Saves a CSV file. So, name should contain ".csv" at the end.}
+\item{file}{a character string naming a file. "" indicates output to the console only (default).
+Saves a CSV file. Its name should end with ".csv".}
 
 \item{surplusMethod}{a character string indicating which method to use for
-surplus allocation. Currently supports only one option "Cambridge" (default)}
+surplus allocation. Currently supports "Cambridge" (default) and "Fractional".}
 
 \item{quotaMethod}{a character string indicating which method to use for
-calculation of quota. Currently support only one option "Droop" (default)}
+calculation of quota. Currently supports "Droop" (default) and "Hare".}
 }
 \value{
-a data.frame with rows containing detailed results from each round of STV counting.
-    For any given round of counting, a row contains: number of active ballots, seats to fill,
-    quota, maximum and minimum votes obtained by any candidate, who was eliminated (if any),
-    if there was a tie for elimination (if yes, how many tied), who was elected (if any),
-    surplus if elected and each candidate's votes tally for that round.
+a list consisting of a data.frame with rows containing detailed results from each 
+    round of STV counting, and a vector of election winners.
+    For any given round of counting, a row of the detailed information contains: number of 
+    active ballots, seats to fill, quota, maximum and minimum votes obtained by any candidate, 
+    who was eliminated (if any), if there was a tie for elimination (if yes, how many tied), 
+    who was elected (if any), surplus if elected, and each candidate's votes tally for that round.
 }
 \description{
-\code{stv} returns a data.frame with rows containing detailed results
-from each round of STV counting.
+\code{stv} returns a list containing a data.frame with rows containing detailed results
+from each round of STV counting, and a vector containing the elected candidates.
 }
 \details{
-\code{stv()} first validates \code{x} by running \code{validateBallots()} function.
-Once validation is complete, it implements Single Transferable Vote
+\code{stv()} first validates \code{x} by running the \code{validateBallots()} function.
+Once validation is complete, it implements the selected single transferable vote
 counting method. Each round of counting starts with idetification of active
-ballots. Then quota is calculated (currently only supports Droop method \code{INCLUDE FORMULA?}).
-Tally of candidates is obtained using top choices of active ballots. If a
-candidate reaches quota, she/he is elected and associated surplus ballots
-are reallocated (currently only supports Cambridge method \code{ONE LINE DETAIL?}). If multiple candidates
-reach quota, all of them are elected and their surplus are allocated in that
-round itself. If nobody reaches quota then candidate with minimum number of votes
-is eliminated. If multiple candidates tie for minimum number of votes, one of
-them is selected at random and eliminated. The process is repeated till all
-of the seats are filled or number of candidates still in race equals number
-of unfilled seats. In later case, all of the active candidates are elected.
-Note: a ballot stays active till either it runs out of marked choices or gets
-removed during surplus allocation.
+ballots. Then a quota is calculated (currently only supports Droop method 
+\code{floor(votes/(seats + 1)) + 1} and Hare method \code{floor(votes/seats)}).
+A tally of each candidate's vote share is obtained using top choices of active ballots, 
+where a ballot stays active until it runs out of marked choices or gets
+removed during surplus reallocation. If a candidate reaches the quota, she/he is elected 
+and associated surplus ballots are reallocated (currently only supports Cambridge and 
+Fractional methods). If multiple candidates reach the quota, all of them are elected and 
+their surpluses are all reallocated. If no candidate reaches the quota, then the candidate 
+with the minimum number of votes is eliminated. If multiple candidates tie for minimum 
+number of votes, one of them is selected at random and eliminated. The process is repeated 
+until all of the seats are filled or the number of candidates still in race equals the number
+of unfilled seats. In the later case, all of the active candidates are elected.
 }
 \examples{
 data(ballots)

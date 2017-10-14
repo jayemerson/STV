@@ -3,9 +3,9 @@
 \docType{package}
 \name{STV-package}
 \alias{STV-package}
-\title{STV Voting (EDIT THIS)}
+\title{STV Vote Counting}
 \description{
-Blah blah...
+Functions in this package are designed to clean, validate, and count single transferable votes.
 }
 \author{
 Jay Emerson (expand this)

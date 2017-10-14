@@ -15,11 +15,12 @@ Authors@R: c(
 Maintainer: Jay Emerson <john.emerson@yale.edu>
 URL: https://github.com/jayemerson/STV
 BugReports: https://github.com/jayemerson/STV/issues
-Description: An implementation of Single Transferable Vote (STV) counting 
-    system. Currently uses Cambridge, MA method for surplus allocation and
-    Droop method for quota calculation.  We welcome collaborators who are
-    interested in offering new options.
-License: file LICENSE
+Description: Implementations of the Single Transferable Vote (STV) counting 
+    system. By default, it uses the Cambridge, MA method for surplus allocation
+    and Droop method for quota calculation.  Fractional surplus allocation
+    and the Hare quota are available as options.
+License: LGPL-3
 Encoding: UTF-8
 LazyData: true
+Suggests: testthat
 RoxygenNote: 6.0.1
