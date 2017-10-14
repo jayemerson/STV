@@ -7,7 +7,7 @@
 #' Once validation is complete, it implements the selected single transferable vote
 #' counting method. Each round of counting starts with idetification of active
 #' ballots. Then a quota is calculated (currently only supports Droop method 
-#' \code{ceiling(votes/(seats + 1))} and Hare method \code{ceiling(votes/seats)}).
+#' \code{floor(votes/(seats + 1)) + 1} and Hare method \code{floor(votes/seats)}).
 #' A tally of each candidate's vote share is obtained using top choices of active ballots, 
 #' where a ballot stays active until it runs out of marked choices or gets
 #' removed during surplus reallocation. If a candidate reaches the quota, she/he is elected 
@@ -22,7 +22,7 @@
 #' @param x a data.frame with rows as ballots and columns as candidates. \code{x}
 #'     must pass all checks from \code{validateBallots()}.
 #' @param seats a number indicating candidates to elect. (default = 1)
-#' @param file a character string naming file. "" indicates output to the console only (default).
+#' @param file a character string naming a file. "" indicates output to the console only (default).
 #'     Saves a CSV file. Its name should end with ".csv".
 #' @param surplusMethod a character string indicating which method to use for
 #'     surplus allocation. Currently supports "Cambridge" (default) and "Fractional".
@@ -103,9 +103,9 @@ stv <- function(x, seats = 1, file = "", surplusMethod = "Cambridge", quotaMetho
     }
     res$ballots[Nround] <- ballot.size
 
-    # Calculate Quota: Manually add 1 instead of using "ceiling()" to address whole numbers
+    # Calculate Quota:
     if (quotaMethod == "Droop") quota <- floor(ballot.size/(unfilled + 1)) + 1
-    if (quotaMethod == "Hare") quota <- ceiling(ballot.size/unfilled)
+    if (quotaMethod == "Hare") quota <- floor(ballot.size/unfilled)
     res$quota[Nround] <- quota
 
     # Get top choice for each valid ballot then tabulate it (i.e. get vote count for each candidate):
@@ -126,7 +126,7 @@ stv <- function(x, seats = 1, file = "", surplusMethod = "Cambridge", quotaMetho
     res[Nround, elect] <- "Elected"
     res[Nround, elim] <- "Eliminated"
 
-    # Check for elected candidate(s): If quota crossed, surplus distribution by Cambridge method.
+    # Check for elected candidate(s): If quota crossed, surplus distribution.
     #   else: eliminate a candidate and redistribute votes
     if (any(vote.counts >= quota)) {
       curr.elected <- vote.counts[vote.counts >= quota]

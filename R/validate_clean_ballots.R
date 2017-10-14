@@ -37,25 +37,27 @@ validateBallots <- function(x) {
     stop("\nPlease enter object of class data.frame, or use cleanBallots().")
 
   # 2. Check sanity of column names:
+  if(is.null(names(x))) 
+    stop("\nPlease provide each candidate's name/identifier as column names.")
   if (any(is.na(names(x)))) 
     stop("\nPlease provide each candidate's name/identifier as column names.")
   if (length(unique(names(x))) != ncol(x)) 
     stop("\nPlease provide unique column names.")
 
-  # 3. Check if x is numeric:
-  if (any(!sapply(x, is.numeric))) {
-    print(paste("Column(s):",
-                paste(which(!sapply(x, is.numeric)), collapse = ", "),
-                "contain non-numeric data."))
-    stop("\nPlease provide numeric input.")
-  }
-
-  # 4. Check for blank cols:
+  # 3. Check for blank cols:
   if (any(colSums(is.na(x)) == nrow(x))) {
     print(paste("Column(s):",
                 paste(which(colSums(is.na(x)) == nrow(x)), collapse = ","),
                 "do not contain any ranks."))
     stop("\nPlease remove column(s) for candidate(s) not ranked, or use cleanBallots()")
+  }
+  
+  # 4. Check if x is numeric:
+  if (any(!sapply(x, is.numeric))) {
+    print(paste("Column(s):",
+                paste(which(!sapply(x, is.numeric)), collapse = ", "),
+                "contain non-numeric data."))
+    stop("\nPlease provide numeric input.")
   }
 
   # 5. Check for blank rows and rows w/ non-sequencial ranks
@@ -65,8 +67,7 @@ validateBallots <- function(x) {
                 "do not contain any ranks."))
     stop("\nPlease remove blank row(s), or use cleanBallots()")
   }
-  # And finishing (5), note that sort() removes NAs, but be careful with max().
-  # Minor changes in code by JWE May 15.
+
   valid <- rep(NA, nrow(x))
   for (i in 1:nrow(x)) {
     valid[i] <- identical(as.numeric(sort(x[i,])),
@@ -152,18 +153,16 @@ cleanBallots <- function(x, cand.names = NULL) {
   # 4. Remove blank cols: 
   x <- x[, colSums(!is.na(x)) > 0]
 
-  # 5. Remove blank rows:  ### JWE 5/15 changed.
+  # 5. Remove blank rows: 
   x <- x[rowSums(!is.na(x)) > 0, ]
 
-  ### Needed: drop cases with ties, and do it here.
-  
-  #### JWE 5/15 this is doing a check, not making a fix.  Revised 5/15.
-  #valid <- rep(FALSE, nrow(x))
+  # 6. Remove ballots with duplicated ranks:
+  x <- x[!apply(x, 1, function(y) any(duplicated(unlist(y), incomparables = NA))),]
+
+  # 7. Reformat votes to follow rank convention
   for (i in 1:nrow(x)) {
     x[i,] <- rank(x[i,], na.last="keep")
-    #valid[i] <- identical(as.numeric(sort(x[i,])), as.numeric(1:max(x[i,], na.rm = TRUE)))
   }
-  #x <- x[valid, ]
 
   if (class(try(validateBallots(x))) == "try-error")
     warning("Validation failed the validateBallots() check")
