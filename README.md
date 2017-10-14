@@ -10,7 +10,7 @@ and the Hare quota are available as options.
 <a href="https://travis-ci.org/jayemerson/STV"><img src="https://travis-ci.org/jayemerson/STV.svg?branch=master"></a>
 
 # More Information on STV
-#
+
 See a page from the <a href="https://www.electoral-reform.org.uk/voting-systems/types-of-voting-system/single-transferable-vote/">Electoral Reform Society</a>, or
 of course <a href="https://en.wikipedia.org/wiki/Single_transferable_vote">Wikipedia</a>.
 A second Wikipedia page describes the 
@@ -20,7 +20,7 @@ There is also a <a href="https://www.youtube.com/watch?v=l8XOZJkozfI">cute video
 cartoon</a> on YouTube that you might enjoy.
 
 # Getting Started
-#
+
 To load the package in R directly from github, you may use the following commands:
 
 ---
@@ -30,7 +30,7 @@ To load the package in R directly from github, you may use the following command
 ---
 
 # Feedback
-#
+
 Although there are many ways of counting single transferable votes, this package supports only two quota methods and two surplus reallocation methods. We welcome collaboration as we expand the vote count method options.
 
 # Jay's Github notes (because I can never remember...)
