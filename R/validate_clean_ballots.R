@@ -143,11 +143,20 @@ cleanBallots <- function(x, cand.names = NULL) {
   #-------------: going to remove those names?   JWE May 16, could be
   # improved to check existing column names?
   if (!is.null(cand.names)) {
-    if (length(cand.names) != ncol(x)) {
+    if (sum(!is.na(cand.names)) != ncol(x) | length(cand.names) != ncol(x)) {
       stop ("Please provide exactly one candidate name for each column.")
     }
     names(x) <- cand.names
   }
+  
+  if(is.null(names(x)))
+    stop("\nPlease provide each candidate's name/identifier as column names, or through the cand.names argument.")
+  
+  if(sum(!is.na(names(x))) != ncol(x))
+    stop("Please provide exactly one candidate name for each column.")
+  
+  if (anyDuplicated(names(x))) 
+    warning ("Duplicate candidate names have been modified or removed.")
 
   # 4. Remove blank cols: 
   x <- x[, colSums(!is.na(x)) > 0]
