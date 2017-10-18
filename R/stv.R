@@ -8,17 +8,18 @@
 #' Once validation is complete, it implements the selected single transferable vote
 #' counting method. Each round of counting starts with idetification of active
 #' ballots. Then a quota is calculated (currently only supports Droop method 
-#' \code{floor(votes/(seats + 1)) + 1} and Hare method \code{floor(votes/seats)}).
-#' A tally of each candidate's vote share is obtained using top choices of active ballots, 
-#' where a ballot stays active until it runs out of marked choices or gets
-#' removed during surplus reallocation. If a candidate reaches the quota, she/he is elected 
-#' and associated surplus ballots are reallocated (currently only supports Cambridge and 
-#' Fractional methods). If multiple candidates reach the quota, all of them are elected and 
-#' their surpluses are all reallocated. If no candidate reaches the quota, then the candidate 
-#' with the minimum number of votes is eliminated. If multiple candidates tie for minimum 
-#' number of votes, one of them is selected at random and eliminated. The process is repeated 
-#' until all of the seats are filled or the number of candidates still in race equals the number
-#' of unfilled seats. In the later case, all of the active candidates are elected.
+#' \code{floor(votes/(seats + 1)) + 1} and Hare method \code{floor(votes/seats)})
+#' with or without the \code{floor()} rounding. A tally of each candidate's vote share 
+#' is obtained using top choices of active ballots, where a ballot stays active until it 
+#' runs out of marked choices or gets removed during surplus reallocation. If a candidate 
+#' reaches the quota, she/he is elected and associated surplus ballots are reallocated 
+#' (currently only supports Cambridge and Fractional methods). If multiple candidates reach 
+#' the quota, all of them are elected and their surpluses are all reallocated. If no candidate 
+#' reaches the quota, then the candidate with the minimum number of votes is eliminated. 
+#' If multiple candidates tie for minimum number of votes, one of them is selected at random 
+#' and eliminated. The process is repeated until all of the seats are filled or the number of 
+#' candidates still in race equals the number of unfilled seats. In the later case, 
+#' all of the active candidates are elected.
 #'
 #' @param x a data frame with rows of ballots and columns for each
 #'     candidate. \code{x} must pass all checks from
@@ -33,16 +34,19 @@
 #' @param quotaMethod a character string indicating which method to use for
 #'     calculation of quota. Currently supports \code{"Droop"} (default) and 
 #'     \code{"Hare"}.
+#' @param quotaFloor a logical value indicating whether candidates must reach
+#'     the integer part of the quota in order to be elected (default) or if they
+#'     must reach the exact quota which may be fractional.
 #'
 #' @return The object returned is a list consisting of two components: a
 #'     vector of the elected candidates, and a data frame with rows containing
 #'     detailed results from each round of STV counting.
 #'     
-#'     For any given round of counting, a row of the detailed information
+#'     For every round of vote counting, a row of the detailed information
 #'     contains: number of active ballots, seats to remaining to be filled,
 #'     the current quota, the maximum and minimum votes obtained by each
 #'     candidate, who was eliminated (if applicable), whether there was a
-#'     tie for elimination (indicated by how many tied),  who was elected
+#'     tie for elimination (indicated by how many tied), who was elected
 #'     (if applicable), the surplus if elected (or multiple surpluses if
 #'     multiple candidates were elected), and each candidate's votes tally
 #'     for that round.
@@ -74,15 +78,23 @@
 #' }
 #' 
 #' @export
-stv <- function(x, seats = 1, file = "", surplusMethod = "Cambridge", quotaMethod = "Droop") {
+stv <- function(x, seats = 1, file = "", surplusMethod = "Cambridge", 
+                quotaMethod = "Droop", quotaFloor = TRUE) {
 
   # Ensure supported surpluse and quota methods are selected
-  if (!surplusMethod %in% c("Cambridge", "Fractional")) stop("Please set surplusMethod = 'Cambridge' or 'Fractional'. These are currently the only supported methods.")
-  if (!quotaMethod %in% c("Droop", "Hare")) stop("Please set quotaMethod = 'Droop' or 'Hare'. These are currently the only supported methods.")
-
+  if (is.null(surplusMethod) | is.null(quotaMethod) | is.null(quotaFloor))
+    stop("surplusMethod, quotaMethod, and quotaFloor must all be specified.")
+  if (c(!surplusMethod %in% c("Cambridge", "Fractional") | length(surplusMethod) != 1)[1]) 
+    stop("Please set surplusMethod = 'Cambridge' or 'Fractional'. These are currently the only supported methods.")
+  if (c(!quotaMethod %in% c("Droop", "Hare") | length(quotaMethod) != 1)[1])
+    stop("Please set quotaMethod = 'Droop' or 'Hare'. These are currently the only supported methods.")
+  if (c(!quotaFloor %in% c(TRUE, FALSE) | length(quotaFloor) != 1)[1])
+    stop("Please set quotaFloor = TRUE or FALSE.")
+  
   junk <- validateBallots(x)
 
-  if(seats > ncol(x)) stop("Number of seats must be less than or equal to the number of candidates.")
+  if(seats > ncol(x)) 
+    stop("Number of seats must be less than or equal to the number of candidates.")
 
   # Initialize various things:
   elim <- c()                                  # Store names of eliminated candidates
@@ -100,7 +112,7 @@ stv <- function(x, seats = 1, file = "", surplusMethod = "Cambridge", quotaMetho
   names(res) <- c("ballots", "seats.to.fill", "quota", "max.vote.count", "min.vote.count",
                   "elim.cand", "tied.for.elim", "elect.cand", "surplus", names(x))
 
-  # Iteratively elect/eliminate candidates till all seats are filled:
+  # Iteratively elect/eliminate candidates until all seats are filled:
   while (unfilled > 0) {
     Nround <- Nround + 1
     res[Nround, ] <- rep(NA, ncol(res))
@@ -117,7 +129,8 @@ stv <- function(x, seats = 1, file = "", surplusMethod = "Cambridge", quotaMetho
       res$quota[Nround] <- "Won by elim"
 
       if (file != "") {
-        if (substr(file, nchar(file)-3, nchar(file)) != ".csv") warning("File name provided does not include .csv extention")
+        if (substr(file, nchar(file)-3, nchar(file)) != ".csv") 
+          warning("File name provided does not include .csv extention")
         write.table(res, file = file, sep = ",", row.names = FALSE)
       }
 
@@ -136,9 +149,15 @@ stv <- function(x, seats = 1, file = "", surplusMethod = "Cambridge", quotaMetho
     res$ballots[Nround] <- ballot.size
 
     # Calculate Quota:
-    if (quotaMethod == "Droop") quota <- floor(ballot.size/(unfilled + 1)) + 1
-    if (quotaMethod == "Hare") quota <- floor(ballot.size/unfilled)
-    res$quota[Nround] <- quota
+    if (quotaFloor) {
+      if (quotaMethod == "Droop") quota <- floor(ballot.size/(unfilled + 1)) + 1
+      if (quotaMethod == "Hare") quota <- floor(ballot.size/unfilled)
+    } else {
+      if (quotaMethod == "Droop") quota <- ballot.size/(unfilled + 1) + 1
+      if (quotaMethod == "Hare") quota <- ballot.size/unfilled
+    }
+    
+    res$quota[Nround] <- round(quota, 2)
 
     # Get top choice for each valid ballot then tabulate it (i.e. get vote count for each candidate):
     top.choice <- apply(x[ ,curr.candidates], 1, function(i.row) names(x[ ,curr.candidates])[which.min(i.row)])
@@ -162,6 +181,12 @@ stv <- function(x, seats = 1, file = "", surplusMethod = "Cambridge", quotaMetho
     #   else: eliminate a candidate and redistribute votes
     if (any(vote.counts >= quota)) {
       curr.elected <- vote.counts[vote.counts >= quota]
+      
+      if(length(curr.elected) > unfilled) {
+        warning(paste0("In round ", Nround, ", more candidates met the quota than can be elected to open seats. Ties were broken randomly."))
+        curr.elected <- sample(curr.elected, unfilled)
+      }  
+      
       elect <- c(elect, names(curr.elected))
       unfilled <- seats - length(elect)
       res$elect.cand[Nround] <- paste(names(curr.elected), collapse = "; ")
@@ -188,7 +213,8 @@ stv <- function(x, seats = 1, file = "", surplusMethod = "Cambridge", quotaMetho
   } # CLOSE while-loop
 
   if (file != "") {
-    if (substr(file, nchar(file)-3, nchar(file)) != ".csv") warning("File name provided does not include .csv extention")
+    if (substr(file, nchar(file)-3, nchar(file)) != ".csv") 
+      warning("File name provided does not include .csv extention")
     write.table(res, file = file, sep = ",", row.names = FALSE)
   }
 

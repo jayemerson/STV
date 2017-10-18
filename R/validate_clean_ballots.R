@@ -1,29 +1,29 @@
 #' Validates Input Data Format for \code{stv()}.
 #'
-#' Validates data format for \code{stv()} input. Assumes each row and column
-#' corresponds to a ballot and candidate respectively. See details for the
-#' tests run by this function. If input data is in correct format, returns
-#' string: "All tests passed. Please feel free to run \code{stv()} function.".
-#' Otherwise, prints corresponding warning message.
+#' The function \code{validateBallots} validates data format for \code{stv()} input.  
+#' It assumes that each row corresponds to a ballot and each column corresponds to a 
+#' candidate. If input data is in the correct format, \code{validateBallots} returns 
+#' string: "All tests passed. Please feel free to run \code{stv()} function." 
+#' Otherwise, it prints a message corresponding to the formatting error.
 #'
-#' Checks if input data is in acceptable format for \code{stv()}. User must run
-#' this function before calling \code{stv()}. Before any calculation, \code{stv()}
-#' calls this function and proceeds only if \code{x} passes all of the following tests
-#' (run in given order).
+#' The \code{validateBallots} function should be run before \code{stv()} is called. 
+#' Before any calculation, \code{stv()} calls this function and proceeds only 
+#' if \code{x} passes all of the following tests.
 #' \enumerate{
 #'   \item If \code{x} is a \code{data.frame}.
 #'   \item If \code{x} has unique column names.
 #'   \item If \code{x} has numeric entries.
-#'   \item If \code{x} doesn't have any blank column.
-#'   \item If \code{x} doesn't have any blank row or a row with non-sequential ranks.
+#'   \item If \code{x} doesn't have any blank columns.
+#'   \item If \code{x} doesn't have any blank rows.
+#'   \item If \code{x} doesn't have any rows with non-sequential ranks.
 #' }
 #'
 #' @param x a \code{data.frame} with rows as ballots and columns as candidates.
 #'
 #' @return string: "All tests passed. Please feel free to run stv() function." if \code{x}
-#'   passes all tests. Otherwise, corresponding warning message. NOTE: Some of the
-#'   warnings can be fixed using \code{cleanBallots()} function. Other issues must be
-#'   fixed by the user.
+#'   passes all tests. Otherwise, a message corresponding to the problem is retunred. 
+#'   NOTE: Some of the warnings can be fixed using \code{cleanBallots()} function. 
+#'   Other issues must be fixed by the user.
 #'
 #' @examples
 #' data(ballots)
@@ -86,20 +86,19 @@ validateBallots <- function(x) {
 
 #' Tries to Address \code{validateBallots()} Warning(s).
 #'
-#' Tries to clean data for \code{stv()}. Some of the warnings from \code{validateBallots()}
-#' have to addressed by the user (see Details).
+#' The \code{cleanBallots()} function tries to clean data for use in \code{stv()}. 
+#' Some warnings from \code{validateBallots()} can only be addressed by the user.
 #'
-#' Assumes \code{x} contains rows and columns corresponding to ballots and
-#' candidates respectively. Tries to address issues raised by \code{validateBallots()}
-#' in the following order:
+#' The \code{cleanBallots()} function assumes \code{x} contains rows and columns 
+#' corresponding to ballots and candidates respectively. Formatting corrections 
+#' are attempted in the following order:
 #' \enumerate{
-#'   \item If \code{x} is a \code{matrix} then converts to \code{data.frame}.
-#'     Otherwise, user has to convert \code{x} into \code{data.frame}.
-#'   \item Checks if \code{x} has numeric entries. If not, checks if numeric
-#'     data was passed as character. If this also fails, then user has to
-#'     convert data into numeric type.
-#'   \item If column names of \code{x} are missing assigns \code{cand.names} as
-#'     column names. If
+#'   \item If \code{x} is a \code{matrix} it is convered to a \code{data.frame}.
+#'     Otherwise, user must provide a \code{data.frame}.
+#'   \item If \code{x} has non-numeric entries, user must
+#'     convert data to numeric type.
+#'   \item If \code{cand.names} is specified, it is assigned as column names of \code{x}. 
+#'   All collumn names must be uniquely specified.
 #'   \code{x} already has valid column names, no need to specify \code{cand.names}.
 #'   If column names of \code{x} missing and \code{cand.names} not specified, returns
 #'   error message.
