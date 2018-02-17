@@ -16,21 +16,20 @@ cleanBallots(x, cand.names = NULL)
 a \code{data.frame} compatible for \code{stv()} function.
 }
 \description{
-Tries to clean data for \code{stv()}. Some of the warnings from \code{validateBallots()}
-have to addressed by the user (see Details).
+The \code{cleanBallots()} function tries to clean data for use in \code{stv()}. 
+Some warnings from \code{validateBallots()} can only be addressed by the user.
 }
 \details{
-Assumes \code{x} contains rows and columns corresponding to ballots and
-candidates respectively. Tries to address issues raised by \code{validateBallots()}
-in the following order:
+The \code{cleanBallots()} function assumes \code{x} contains rows and columns 
+corresponding to ballots and candidates respectively. Formatting corrections 
+are attempted in the following order:
 \enumerate{
-  \item If \code{x} is a \code{matrix} then converts to \code{data.frame}.
-    Otherwise, user has to convert \code{x} into \code{data.frame}.
-  \item Checks if \code{x} has numeric entries. If not, checks if numeric
-    data was passed as character. If this also fails, then user has to
-    convert data into numeric type.
-  \item If column names of \code{x} are missing assigns \code{cand.names} as
-    column names. If
+  \item If \code{x} is a \code{matrix} it is convered to a \code{data.frame}.
+    Otherwise, user must provide a \code{data.frame}.
+  \item If \code{x} has non-numeric entries, user must
+    convert data to numeric type.
+  \item If \code{cand.names} is specified, it is assigned as column names of \code{x}. 
+  All collumn names must be uniquely specified.
   \code{x} already has valid column names, no need to specify \code{cand.names}.
   If column names of \code{x} missing and \code{cand.names} not specified, returns
   error message.
