@@ -34,9 +34,10 @@
 #' @param quotaMethod a character string indicating which method to use for
 #'     calculation of quota. Currently supports \code{"Droop"} (default) and 
 #'     \code{"Hare"}.
-#' @param quotaFloor a logical value indicating whether candidates must reach
-#'     the integer part of the quota in order to be elected (default) or if they
-#'     must reach the exact quota which may be fractional.
+#' @param quotaFloor a logical value indicating that candidates must reach
+#'     the integer part of the quota in order to be elected if \code{"TRUE"} 
+#'     (default) or that they must reach the exact quota which may be 
+#'     fractional if \code{"FALSE"}.
 #'
 #' @return The object returned is a list consisting of two components: a
 #'     vector of the elected candidates, and a data frame with rows containing

@@ -139,9 +139,6 @@ cleanBallots <- function(x, cand.names = NULL) {
   }
 
   # 3. Provide column names:
-  #--- CHECK ---: If x already has valid column names, is this code
-  #-------------: going to remove those names?   JWE May 16, could be
-  # improved to check existing column names?
   if (!is.null(cand.names)) {
     if (sum(!is.na(cand.names)) != ncol(x) | length(cand.names) != ncol(x)) {
       stop ("Please provide exactly one candidate name for each column.")

@@ -11,28 +11,28 @@ validateBallots(x)
 }
 \value{
 string: "All tests passed. Please feel free to run stv() function." if \code{x}
-  passes all tests. Otherwise, corresponding warning message. NOTE: Some of the
-  warnings can be fixed using \code{cleanBallots()} function. Other issues must be
-  fixed by the user.
+  passes all tests. Otherwise, a message corresponding to the problem is retunred. 
+  NOTE: Some of the warnings can be fixed using \code{cleanBallots()} function. 
+  Other issues must be fixed by the user.
 }
 \description{
-Validates data format for \code{stv()} input. Assumes each row and column
-corresponds to a ballot and candidate respectively. See details for the
-tests run by this function. If input data is in correct format, returns
-string: "All tests passed. Please feel free to run \code{stv()} function.".
-Otherwise, prints corresponding warning message.
+The function \code{validateBallots} validates data format for \code{stv()} input.  
+It assumes that each row corresponds to a ballot and each column corresponds to a 
+candidate. If input data is in the correct format, \code{validateBallots} returns 
+string: "All tests passed. Please feel free to run \code{stv()} function." 
+Otherwise, it prints a message corresponding to the formatting error.
 }
 \details{
-Checks if input data is in acceptable format for \code{stv()}. User must run
-this function before calling \code{stv()}. Before any calculation, \code{stv()}
-calls this function and proceeds only if \code{x} passes all of the following tests
-(run in given order).
+The \code{validateBallots} function should be run before \code{stv()} is called. 
+Before any calculation, \code{stv()} calls this function and proceeds only 
+if \code{x} passes all of the following tests.
 \enumerate{
   \item If \code{x} is a \code{data.frame}.
   \item If \code{x} has unique column names.
   \item If \code{x} has numeric entries.
-  \item If \code{x} doesn't have any blank column.
-  \item If \code{x} doesn't have any blank row or a row with non-sequential ranks.
+  \item If \code{x} doesn't have any blank columns.
+  \item If \code{x} doesn't have any blank rows.
+  \item If \code{x} doesn't have any rows with non-sequential ranks.
 }
 }
 \examples{
