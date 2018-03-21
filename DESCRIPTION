@@ -1,9 +1,8 @@
 Package: STV
 Type: Package
 Title: Single Transferable Vote Counting
-Version: 0.2.0
+Version: 1.0.0
 Authors@R: c(
-    person("ToDiscuss", "InMeeting", role = "aut"),
     person("John", "Emerson", email = "john.emerson@yale.edu", role = c("cre", "aut")),
     person("Saksham", "Chandra", role = "aut"),
     person("Lilla", "Orr", role = "aut"),
@@ -20,7 +19,6 @@ Description: Implementations of the Single Transferable Vote counting
     and Droop method for quota calculation.  Fractional surplus allocation
     and the Hare quota are available as options.
 License: LGPL-3
-Copyright: (C) 2017 John W. Emerson
 Encoding: UTF-8
 LazyData: true
 Suggests: testthat, crayon
