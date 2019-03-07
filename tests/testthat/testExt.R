@@ -1,6 +1,11 @@
 context("Basic extractions")
 
 test_that("Toy example", {
+  
+  # Added March 7 to force use of legacy random number generation
+  # so the tests should pass both in current and devel versions of R.
+  suppressWarnings(RNGversion("3.5.0"))
+  
   set.seed(1)
   data(ballots)
   cballots <- cleanBallots(ballots)
