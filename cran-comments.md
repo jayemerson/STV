@@ -9,3 +9,6 @@ There were no ERRORs or WARNINGs or NOTEs.
 ## Downstream dependencies
 None.  This is a new package that is unlikely to ever have
 dependencies.
+
+## Most recent changes
+* Followed recommendation for setting seed in test examples.
