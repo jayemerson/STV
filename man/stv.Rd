@@ -4,8 +4,14 @@
 \alias{stv}
 \title{Implement STV Counting Systems}
 \usage{
-stv(x, seats = 1, file = "", surplusMethod = "Cambridge",
-  quotaMethod = "Droop", quotaFloor = TRUE)
+stv(
+  x,
+  seats = 1,
+  file = "",
+  surplusMethod = "Cambridge",
+  quotaMethod = "Droop",
+  quotaFloor = TRUE
+)
 }
 \arguments{
 \item{x}{a data frame with rows of ballots and columns for each

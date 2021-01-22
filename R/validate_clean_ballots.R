@@ -70,7 +70,10 @@ validateBallots <- function(x) {
 
   valid <- rep(NA, nrow(x))
   for (i in 1:nrow(x)) {
-    valid[i] <- identical(as.numeric(sort(x[i,])),
+    #valid[i] <- identical(as.numeric(sort(x[i,])),
+    #                      as.numeric(1:max(x[i,], na.rm = TRUE)))
+    # Note that the as.numeric() strips off the names to enable identical().
+    valid[i] <- identical(sort(as.numeric(x[i,])),
                           as.numeric(1:max(x[i,], na.rm = TRUE)))
   }
 
