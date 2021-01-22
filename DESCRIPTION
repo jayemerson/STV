@@ -1,7 +1,7 @@
 Package: STV
 Type: Package
 Title: Single Transferable Vote Counting
-Version: 1.0.1
+Version: 1.0.2
 Authors@R: c(
     person("John", "Emerson", email = "john.emerson@yale.edu", role = c("cre", "aut")),
     person("Saksham", "Chandra", role = "aut"),
